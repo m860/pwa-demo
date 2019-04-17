@@ -1,62 +1,19 @@
-var cacheStorageKey = "cache-7";
-var cacheList = [
-    "index.css"
-];
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.2.0/workbox-sw.js');
 
-var tag = "service worker";
-
-var postMessage = function (message) {
-    self.clients.matchAll()
-        .then(function (clients) {
-            if (clients && clients.length) {
-                clients.forEach(function (client) {
-                    client.postMessage(message);
-                })
-            }
-        })
+if (workbox) {
+    console.log(`Yay! Workbox is loaded 🎉`);
+} else {
+    console.log(`Boo! Workbox didn't load 😬`);
 }
 
-self.addEventListener("install", function (e) {
-    postMessage("service worker install is fired");
-    e.waitUntil(
-        caches.open(cacheStorageKey)
-            .then(function (cache) {
-                cache.addAll(cacheList);
-            })
-            .then(function () {
-                self.skipWaiting();
-            })
-    )
-});
+workbox.routing.registerRoute(
+    new RegExp('.*\.js'),
+    new workbox.strategies.NetworkFirst()
+);
 
-self.addEventListener('fetch', function (e) {
-    postMessage("service worker fetch is fired")
-    e.respondWith(
-        caches.match(e.request).then(function (response) {
-            if (response != null) {
-                return response
-            }
-            return fetch(e.request.url)
-        })
-    )
-});
-
-self.addEventListener('activate', function (e) {
-    postMessage("service worker activate is fired");
-    e.waitUntil(
-        Promise.all(
-            [
-                caches.keys().then(function (cacheNames) {
-                    return cacheNames.map(name => {
-                        if (name !== cacheStorageKey) {
-                            postMessage("service worker delete cache " + name);
-                            return caches.delete(name)
-                        }
-                    })
-                })
-            ]
-        ).then(() => {
-            return self.clients.claim();
-        })
-    )
-})
+workbox.routing.registerRoute(
+    // Cache CSS files.
+    /\.css$/,
+    // Use cache but update in the background.
+    new workbox.strategies.StaleWhileRevalidate()
+);

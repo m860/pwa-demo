@@ -23,19 +23,12 @@
     <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API">service worker</a>
 </div>
 <script type="application/javascript">
-    var app = document.querySelector(".app");
-    if (navigator.serviceWorker != null) {
-
-        navigator.serviceWorker.register('sw.js')
-            .then(function (registration) {
-                navigator.serviceWorker.addEventListener("message", function (event) {
-                    var div = document.createElement("div");
-                    div.innerText = event.data;
-                    app.append(div);
-                });
-                console.log('Registered events at scope: ', registration.scope);
-            });
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js');
+        });
     }
 </script>
+<script type="application/javascript" src="test.js"></script>
 </body>
 </html>
