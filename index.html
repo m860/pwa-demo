@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>PWA Demo</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div class="app">
+    <h3>version 1</h3>
+    <p>一个可以安装的PWA应用必须要实现以下内容</p>
+    <ul>
+        <li>manifest.json</li>
+        <li>service worker</li>
+    </ul>
+    <em>其中service worker必须实现fetch事件</em>
+    <p>如何更新静态文件的缓存?</p>
+    <p>被缓存的静态文件被修改之后需要修改对应的sw.js中的缓存的key值,这样在下次访问app时会立即更新,但是并不能马上生效,需要在app下次启动时生效</p>
+    <h6>参考文档</h6>
+    <a href="https://developer.mozilla.org/zh-CN/docs/Web/Manifest" target="_blank">manifest</a>
+    <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API">service worker</a>
+</div>
+<script type="application/javascript">
+    var app = document.querySelector(".app");
+    if (navigator.serviceWorker != null) {
+
+        navigator.serviceWorker.register('sw.js')
+            .then(function (registration) {
+                navigator.serviceWorker.addEventListener("message", function (event) {
+                    var div = document.createElement("div");
+                    div.innerText = event.data;
+                    app.append(div);
+                });
+                console.log('Registered events at scope: ', registration.scope);
+            });
+    }
+</script>
+</body>
+</html>
