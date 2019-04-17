@@ -8,7 +8,7 @@ if (workbox) {
 
 workbox.routing.registerRoute(
     new RegExp('.*\.js'),
-    new workbox.strategies.NetworkFirst()
+    new workbox.strategies.StaleWhileRevalidate()
 );
 
 workbox.routing.registerRoute(
