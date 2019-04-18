@@ -1,1 +1,1 @@
-console.log("test js 21")
+console.log("test")

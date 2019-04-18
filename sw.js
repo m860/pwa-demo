@@ -7,7 +7,12 @@ if (workbox) {
 }
 
 workbox.routing.registerRoute(
-    new RegExp('.*\.js'),
+    /\.html$/,
+    new workbox.strategies.StaleWhileRevalidate()
+);
+
+workbox.routing.registerRoute(
+    /\.js$/,
     new workbox.strategies.StaleWhileRevalidate()
 );
 
